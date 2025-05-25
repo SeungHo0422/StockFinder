@@ -1,0 +1,12 @@
+[project]
+name = "stockfinder"
+version = "0.1.0"
+description = "미국 주식 실시간 모니터링 및 자동매매 시스템"
+authors = ["Your Name <your@email.com>"]
+requires-python = ">=3.10"
+dependencies = [
+    "investpy",
+    "python-dotenv"
+]
+
+[tool.uv] 
