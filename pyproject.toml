@@ -5,8 +5,17 @@ description = "미국 주식 실시간 모니터링 및 자동매매 시스템"
 authors = ["Your Name <your@email.com>"]
 requires-python = ">=3.10"
 dependencies = [
-    "investpy",
-    "python-dotenv"
+    "python-dotenv",
+    "pytest",
+    "allure-pytest",
+    "schedule",
+    "requests",
+    "beautifulsoup4",
+    "fastapi",
+    "jinja2",
+    "uvicorn",
+    "python-multipart",
+    "aiofiles"
 ]
 
 [tool.uv] 

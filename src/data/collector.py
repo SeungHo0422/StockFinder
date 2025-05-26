@@ -1,25 +1,14 @@
-import investpy
-import pandas as pd
-from datetime import datetime, timedelta
+from .base_crawler import BaseStockCrawler
+from .investing_crawler import InvestingComCrawler
+
+# 기본 크롤러 인스턴스 (확장성 고려)
+crawler: BaseStockCrawler = InvestingComCrawler()
 
 def get_us_stocks():
-    stocks = investpy.stocks.get_stocks(country='united states')
-    return stocks
+    return crawler.get_us_stocks()
 
 def get_stock_recent_data(symbol: str, n_days: int = 5):
-    end_date = datetime.today()
-    start_date = end_date - timedelta(days=n_days)
-    try:
-        df = investpy.stocks.get_stock_historical_data(
-            stock=symbol,
-            country='united states',
-            from_date=start_date.strftime('%d/%m/%Y'),
-            to_date=end_date.strftime('%d/%m/%Y')
-        )
-        return df
-    except Exception as e:
-        print(f"{symbol} 데이터 수집 실패: {e}")
-        return None
+    return crawler.get_stock_recent_data(symbol, n_days)
 
 if __name__ == "__main__":
     stocks = get_us_stocks()
