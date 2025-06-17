@@ -28,13 +28,13 @@ logger = logging.getLogger(__name__)
 class ScreeningScheduler:
     """스크리닝 스케줄러 클래스"""
     
-    def __init__(self, rsi_threshold: float = 30.0, run_time: str = "09:30", market: str = "ALL"):
+    def __init__(self, rsi_threshold: float = 30.0, run_time: str = "09:00", market: str = "ALL"):
         """
         스케줄러 초기화
         
         Args:
             rsi_threshold: RSI 임계값 (기본값: 30.0)
-            run_time: 매일 실행할 시간 (기본값: "09:30")
+            run_time: 매일 실행할 시간 (기본값: "09:00")
             market: 대상 시장 (기본값: "ALL")
         """
         self.rsi_threshold = rsi_threshold
@@ -209,8 +209,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='스크리닝 스케줄러')
     parser.add_argument('--rsi-threshold', type=float, default=30.0,
                        help='RSI 임계값 (기본값: 30.0)')
-    parser.add_argument('--run-time', type=str, default='09:30',
-                       help='매일 실행할 시간 (기본값: 09:30)')
+    parser.add_argument('--run-time', type=str, default='09:02',
+                       help='매일 실행할 시간 (기본값: 09:00)')
     parser.add_argument('--market', type=str, default='ALL',
                        choices=['ALL', 'KOSPI', 'KOSDAQ', 'KONEX'],
                        help='분석할 시장 (기본값: ALL)')
