@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스크리닝 - StockFinder</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', path='/css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-chart-line me-2"></i>StockFinder
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home me-1"></i>홈
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/screening">
+                            <i class="fas fa-search me-1"></i>스크리닝
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/results">
+                            <i class="fas fa-list me-1"></i>결과
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/settings">
+                            <i class="fas fa-cog me-1"></i>설정
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="container">
+            <!-- Header -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card fade-in">
+                        <div class="card-header">
+                            <h3 class="mb-0">
+                                <i class="fas fa-search me-2"></i>주식 스크리닝 설정
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-secondary mb-0">
+                                RSI, SAR, MACD 기술적 지표를 활용한 순차 필터링을 통해 매수 타이밍을 포착합니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screening Form -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card fade-in">
+                        <div class="card-header">
+                            <h4 class="mb-0">
+                                <i class="fas fa-cogs me-2"></i>스크리닝 조건 설정
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <form id="screening-form">
+                                <!-- RSI 설정 -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-chart-line me-2 text-primary"></i>RSI 임계값 설정
+                                    </label>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label class="form-label">RSI 최대값 (과매도 기준)</label>
+                                            <select class="form-select" id="rsi-threshold" name="rsi_threshold">
+                                                <option value="25">25 (강한 과매도)</option>
+                                                <option value="30" selected>30 (과매도)</option>
+                                                <option value="35">35 (약간 과매도)</option>
+                                                <option value="40">40 (중립~과매도)</option>
+                                                <option value="45">45 (완화된 조건)</option>
+                                                <option value="50">50 (매우 완화된 조건)</option>
+                                            </select>
+                                            <div class="form-text">
+                                                RSI가 이 값보다 낮은 종목을 1차 필터링합니다.
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="card bg-light">
+                                                <div class="card-body">
+                                                    <h6 class="card-title">RSI 조건 설명</h6>
+                                                    <p class="card-text small">
+                                                        <strong>25-30:</strong> 강한 과매도 상태<br>
+                                                        <strong>30-35:</strong> 과매도 상태<br>
+                                                        <strong>35-40:</strong> 약간 과매도<br>
+                                                        <strong>40+:</strong> 완화된 조건
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 시장 선택 -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-filter me-2 text-success"></i>대상 시장 선택
+                                    </label>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <select class="form-select" id="market" name="market">
+                                                <option value="ALL" selected>전체 시장 (코스피 + 코스닥 + 코넥스)</option>
+                                                <option value="KOSPI">코스피</option>
+                                                <option value="KOSDAQ">코스닥</option>
+                                                <option value="KONEX">코넥스</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="card bg-light">
+                                                <div class="card-body">
+                                                    <h6 class="card-title">시장별 특징</h6>
+                                                    <p class="card-text small">
+                                                        <strong>코스피:</strong> 대형주 중심<br>
+                                                        <strong>코스닥:</strong> 중소형주, IT<br>
+                                                        <strong>코넥스:</strong> 벤처기업
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 텔레그램 알림 -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-bell me-2 text-warning"></i>텔레그램 알림 설정
+                                    </label>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="send-telegram" name="send_telegram">
+                                        <label class="form-check-label" for="send-telegram">
+                                            스크리닝 완료 후 텔레그램으로 결과 전송
+                                        </label>
+                                    </div>
+                                    <div class="form-text">
+                                        설정된 텔레그램 봇으로 스크리닝 결과를 자동으로 전송합니다.
+                                    </div>
+                                </div>
+
+                                <!-- 실행 버튼 -->
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary btn-lg" id="run-screening-btn">
+                                        <i class="fas fa-play me-2"></i>스크리닝 실행
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <!-- 필터링 과정 설명 -->
+                    <div class="card mb-4 fade-in">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-info-circle me-2"></i>필터링 과정
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge bg-primary me-2">1단계</span>
+                                    <strong>RSI 계산</strong>
+                                </div>
+                                <p class="small text-secondary">모든 종목의 RSI를 계산하고 설정된 임계값 이하 종목 선별</p>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge bg-success me-2">2단계</span>
+                                    <strong>SAR 분석</strong>
+                                </div>
+                                <p class="small text-secondary">RSI 조건 만족 종목들의 SAR 매수 신호 확인</p>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="badge bg-warning me-2">3단계</span>
+                                    <strong>MACD 분석</strong>
+                                </div>
+                                <p class="small text-secondary">SAR 매수 신호 종목들의 MACD 골든크로스 확인</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 예상 소요 시간 -->
+                    <div class="card mb-4 fade-in">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-clock me-2"></i>예상 소요 시간
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <div class="stats-number" id="estimated-time">-</div>
+                                    <div class="stats-label">예상 시간</div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="stats-number" id="estimated-stocks">-</div>
+                                    <div class="stats-label">분석 종목</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 진행 상황 -->
+                    <div class="card fade-in" id="progress-card" style="display: none;">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-spinner fa-spin me-2"></i>스크리닝 진행 중
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="progress mb-3">
+                                <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+                            </div>
+                            <div id="progress-text" class="text-center">초기화 중...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Container -->
+    <div id="alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 1050;"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', path='/js/screening.js') }}"></script>
+</body>
+</html> 
