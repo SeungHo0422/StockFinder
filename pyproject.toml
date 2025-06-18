@@ -15,7 +15,8 @@ dependencies = [
     "jinja2",
     "uvicorn",
     "python-multipart",
-    "aiofiles"
+    "aiofiles",
+    "ta-lib>=0.6.4",
 ]
 
 [tool.uv] 
