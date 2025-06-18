@@ -184,26 +184,22 @@ def main():
         "KONEX": {"oversold": [], "sar_buy": [], "golden_cross": [], "triple": []}
     }
     
-    # 시장별로 분류
-    for stock_info in oversold_stocks:
-        market = get_stock_market(stock_info["ticker"])
-        if market in market_results:
-            market_results[market]["oversold"].append(stock_info)
+    # 시장별로 분류 (한 번에 처리)
+    print("시장별 결과 분류 중...")
     
-    for stock_info in sar_buy_signals:
-        market = get_stock_market(stock_info["ticker"])
-        if market in market_results:
-            market_results[market]["sar_buy"].append(stock_info)
+    # 모든 결과 리스트를 한 번에 처리
+    all_results = [
+        ("oversold", oversold_stocks),
+        ("sar_buy", sar_buy_signals),
+        ("golden_cross", golden_cross_stocks),
+        ("triple", triple_signal_stocks)
+    ]
     
-    for stock_info in golden_cross_stocks:
-        market = get_stock_market(stock_info["ticker"])
-        if market in market_results:
-            market_results[market]["golden_cross"].append(stock_info)
-    
-    for stock_info in triple_signal_stocks:
-        market = get_stock_market(stock_info["ticker"])
-        if market in market_results:
-            market_results[market]["triple"].append(stock_info)
+    for category, stock_list in all_results:
+        for stock_info in stock_list:
+            market = get_stock_market(stock_info["ticker"])
+            if market in market_results:
+                market_results[market][category].append(stock_info)
     
     # JSON 저장
     output = {
