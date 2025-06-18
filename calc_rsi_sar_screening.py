@@ -15,6 +15,9 @@ except ImportError:
     TELEGRAM_AVAILABLE = False
     print("⚠️  텔레그램 알림 기능을 사용하려면 python-telegram-bot을 설치하세요.")
 
+# 시장별 종목 리스트 캐시
+_market_cache = {}
+
 def analyze_rsi_only(ticker):
     """1차 필터링: RSI만 계산"""
     try:
@@ -274,13 +277,34 @@ def main():
             print(f"💡 조건 완화 제안: --rsi-max 40 또는 --rsi-max 50")
 
 def get_stock_market(ticker):
-    """종목의 시장 정보 조회"""
+    """종목의 시장 정보 조회 (캐시 사용)"""
+    global _market_cache
+    
+    # 캐시가 비어있으면 한 번만 로드
+    if not _market_cache:
+        try:
+            print("시장 데이터를 로딩 중...")
+            kospi_tickers = set(stock.get_market_ticker_list(market="KOSPI"))
+            kosdaq_tickers = set(stock.get_market_ticker_list(market="KOSDAQ"))
+            konex_tickers = set(stock.get_market_ticker_list(market="KONEX"))
+            
+            _market_cache = {
+                "KOSPI": kospi_tickers,
+                "KOSDAQ": kosdaq_tickers,
+                "KONEX": konex_tickers
+            }
+            print("✅ 시장 데이터 로딩 완료")
+        except Exception as e:
+            print(f"❌ 시장 데이터 로딩 실패: {e}")
+            return "UNKNOWN"
+    
+    # 캐시에서 조회
     try:
-        if ticker in stock.get_market_ticker_list(market="KOSPI"):
+        if ticker in _market_cache["KOSPI"]:
             return "KOSPI"
-        elif ticker in stock.get_market_ticker_list(market="KOSDAQ"):
+        elif ticker in _market_cache["KOSDAQ"]:
             return "KOSDAQ"
-        elif ticker in stock.get_market_ticker_list(market="KONEX"):
+        elif ticker in _market_cache["KONEX"]:
             return "KONEX"
         else:
             return "UNKNOWN"
