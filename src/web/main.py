@@ -88,6 +88,7 @@ def run_screening_task(cmd):
     try:
         result = subprocess.run(cmd, capture_output=True, text=True)
         print(f"스크리닝 완료: {result.returncode}")
+        print(f"스크리닝 결과: {result.stdout}")
     except Exception as e:
         print(f"스크리닝 오류: {e}")
 
