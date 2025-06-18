@@ -32,6 +32,16 @@ class TelegramNotifier:
         self.bot_token = bot_token or os.getenv('TELEGRAM_BOT_TOKEN')
         self.chat_id = chat_id or os.getenv('TELEGRAM_CHAT_ID')
         
+        # 봇 토큰에서 주석 제거 (# 이후 텍스트 제거)
+        if self.bot_token and '#' in self.bot_token:
+            self.bot_token = self.bot_token.split('#')[0].strip()
+            logger.info("봇 토큰에서 주석을 제거했습니다.")
+        
+        # 채팅 ID에서 주석 제거
+        if self.chat_id and '#' in self.chat_id:
+            self.chat_id = self.chat_id.split('#')[0].strip()
+            logger.info("채팅 ID에서 주석을 제거했습니다.")
+        
         if not self.bot_token:
             raise ValueError("텔레그램 봇 토큰이 필요합니다. TELEGRAM_BOT_TOKEN 환경변수를 설정하거나 bot_token 파라미터를 전달하세요.")
         
